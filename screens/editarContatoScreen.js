@@ -64,12 +64,12 @@ export default function editarContato({ route, navigation }) {
       "Deseja excluir o registro?",
       [
         {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+          text: "Não",
+          onPress: () => console.log("Não Pressed"),
+          style: "Não"
         },
         {
-          text: "OK", onPress: () => {
+          text: "Sim", onPress: () => {
             axios.delete('http://professornilson.com/testeservico/clientes/' + getId)
               .then(function (response) {
                 navigation.navigate("ListaContatos")

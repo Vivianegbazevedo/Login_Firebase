@@ -9,29 +9,24 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function listarContatos({ navigation }) {
 
-  const [dados,setDados] = useState([]);
+  const [getData, setData] = useState([]);
 
-  useEffect(() => {
-
-    async function resgatarDados() {
-      await axios('http://professornilson.com/testeservico/clientes')
-      .then(function (response) {
-        setDados(response.data);
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
-    resgatarDados()
-
-  },[])
+    useEffect(()=>{
+        
+        async function resgatarDados(){
+            const result = await axios(
+                'http://professornilson.com/testeservico/clientes',
+              );
+              setData(result.data);
+        }
+        resgatarDados();
+    })
 
   return (
     <View>
       <ScrollView>
   {
-    dados.map((l, i) => (
+    getData.map((l, i) => (
       <ListItem key={i} bottomDivider onPress={() => navigation.navigate('EditarContato',{nome:l.nome,
         telefone:l.telefone,
         cpf:l.cpf,
