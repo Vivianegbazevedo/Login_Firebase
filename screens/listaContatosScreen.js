@@ -4,6 +4,8 @@ import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Image, TextInput, TouchableOpacity, Touchable } from 'react-native';
 import axios from 'axios';
 import {ListItem, Avatar} from 'react-native-elements';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function listarContatos({ navigation }) {
 
@@ -11,8 +13,8 @@ export default function listarContatos({ navigation }) {
 
   useEffect(() => {
 
-    function resgatarDados() {
-      axios('http://professornilson.com/testeservico/clientes')
+    async function resgatarDados() {
+      await axios('http://professornilson.com/testeservico/clientes')
       .then(function (response) {
         setDados(response.data);
         console.log(response);

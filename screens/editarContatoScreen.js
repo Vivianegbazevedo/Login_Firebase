@@ -1,69 +1,93 @@
 import { StatusBar } from 'expo-status-bar';
-import React,{useState, useEffect} from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Button, StyleSheet, Text, View, Alert } from 'react-native';
 import { Image, TextInput, TouchableOpacity, Touchable } from 'react-native';
 import axios from 'axios';
+import FlashMessage from "react-native-flash-message";
+import { showMessage, hideMessage } from "react-native-flash-message";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function editarContato({ route, navigation }) {
 
-    const [getId, setId] = useState("");
-    const [getNome, setNome] = useState("");
-    const [getEmail, setEmail] = useState("");
-    const [getCpf, setCpf] = useState("");
-    const [getTelefone, setTelefone] = useState("");
+  const [getId, setId] = useState("");
+  const [getNome, setNome] = useState("");
+  const [getTelefone, setTelefone] = useState("");
+  const [getCpf, setCpf] = useState("");
+  const [getAlterar, setAlterar] = useState("");
 
   useEffect(() => {
     if (route.params) {
-        const {id} = route.params
-        const {nome} = route.params
-        const {email} = route.params
-        const {cpf} = route.params
-        const {telefone} = route.params
-      
-        setId(id)
-        setNome(nome)
-        setEmail(email)
-        setCpf(cpf)
-        setTelefone(telefone)
-         
+      const { id } = route.params
+      const { nome } = route.params
+      const { telefone } = route.params
+      const { cpf } = route.params
+      const { alterar } = route.params
+
+      setId(id)
+      setNome(nome)
+      setCpf(cpf)
+      setAlterar(alterar)
+      setTelefone(telefone)
+
     }
-}, [])
+  }, [])
 
-  function alterarDados(){
+  async function alterarDados() {
 
-    axios.put('http://professornilson.com/testeservico/clientes/'+getId,{
-        nome: getNome,
-        email: getEmail,
-        telefone: getTelefone,
-        cpf: getCpf
-        }).then(function (response) {
-          navigation.navigate("ListaContatos")
-          console.log(response);
-        }).catch(function (error) {
-          console.log(error);
-    
+    await axios.put('http://professornilson.com/testeservico/clientes/' + getId, {
+      nome: getNome,
+      telefone: getTelefone,
+      cpf: getCpf,
+    }).then(function (response) {
+      showMessage({
+        message: "Registro alterado com sucesso!",
+        type: "success",
+      });
+      navigation.navigate("ListaContatos")
+      console.log(response);
+    }).catch(function (error) {
+      showMessage({
+        message: "Algum erro aconteceu!",
+        type: "info",
+      });
+      console.log(error);
+
     });
-    
+
   }
 
-  function excluirDados(){
+  function excluirDados() {
 
-    axios.delete('http://professornilson.com/testeservico/clientes/'+getId)
-    
-      .then(function (response) {
-        navigation.navigate("ListaContatos")
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error);
-    
-    });
-    
+    Alert.alert(
+      "Atenção",
+      "Deseja excluir o registro?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "OK", onPress: () => {
+            axios.delete('http://professornilson.com/testeservico/clientes/' + getId)
+              .then(function (response) {
+                navigation.navigate("ListaContatos")
+                console.log(response);
+              }).catch(function (error) {
+                console.log(error);
+              })
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   }
 
 
   return (
     <View style={styles.container}>
-      <Text style={{marginRight: 240,fontWeight: 'bold', fontSize: 20,}}>Nome</Text>
+      <Text style={{ marginRight: 240, fontWeight: 'bold', fontSize: 20, }}>Nome</Text>
       <TextInput
         style={styles.input}
         onChangeText={text => setNome(text)}
@@ -71,15 +95,8 @@ export default function editarContato({ route, navigation }) {
         placeholder="Digite seu nome"
       />
 
-      <Text style={{marginRight: 240,fontWeight: 'bold', fontSize: 20,}}>Email</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={text => setEmail(text)}
-        value={getEmail}
-        placeholder="Digite seu email"
-      />
 
-      <Text style={{marginRight: 258,fontWeight: 'bold', fontSize: 20,}}>CPF</Text>
+      <Text style={{ marginRight: 258, fontWeight: 'bold', fontSize: 20, }}>CPF</Text>
       <TextInput
         style={styles.input}
         onChangeText={text => setCpf(text)}
@@ -87,16 +104,16 @@ export default function editarContato({ route, navigation }) {
         placeholder="Digite seu cpf"
       />
 
-      <Text style={{marginRight: 213,fontWeight: 'bold', fontSize: 20,}}>Telefone</Text>
+      <Text style={{ marginRight: 213, fontWeight: 'bold', fontSize: 20, }}>Telefone</Text>
       <TextInput
         style={styles.input}
-        onChangeText={text => setTelefone(text)} 
+        onChangeText={text => setTelefone(text)}
         value={getTelefone}
         placeholder="Digite seu telefone"
       />
 
       <TouchableOpacity
-        onPress={() => alterarDados()}    
+        onPress={alterarDados}
         style={{
           width: 300,
           height: 42,
@@ -107,11 +124,13 @@ export default function editarContato({ route, navigation }) {
           justifyContent: 'center'
         }}
       >
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Alterar</Text>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>Alterar</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        onPress={() => excluirDados()}   
+
+
+      <TouchableOpacity
+        onPress={() => excluirDados()}
         style={{
           width: 300,
           height: 42,
@@ -122,8 +141,9 @@ export default function editarContato({ route, navigation }) {
           justifyContent: 'center'
         }}
       >
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Excluir</Text>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>Excluir</Text>
       </TouchableOpacity>
+
     </View>
   );
 
@@ -131,19 +151,19 @@ export default function editarContato({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f3e5f5',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    input: {
-        marginTop: 10,
-        padding: 10,
-        width: 300,
-        backgroundColor: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-        borderRadius: 3
-    }
+  container: {
+    flex: 1,
+    backgroundColor: '#f3e5f5',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  input: {
+    marginTop: 10,
+    padding: 10,
+    width: 300,
+    backgroundColor: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    borderRadius: 3
+  }
 });

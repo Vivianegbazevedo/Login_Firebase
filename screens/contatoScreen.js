@@ -2,35 +2,38 @@ import { StatusBar } from 'expo-status-bar';
 import React,{useState, useEffect} from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { Image, TextInput, TouchableOpacity, Touchable } from 'react-native';
+import FlashMessage from "react-native-flash-message";
+import { showMessage, hideMessage } from "react-native-flash-message";
 import axios from 'axios';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-export default function CadastroContatoScreen({ route, navigation }) {
+export default function contatoScreen({ route, navigation }) {
 
     const [getNome, setNome] = useState("");
-    const [getEmail, setEmail] = useState("");
     const [getCpf, setCpf] = useState("");
     const [getTelefone, setTelefone] = useState("");
 
-   function inserirDados(){
+    async function inserirDados(){
       console.log("dados")
-      axios.post('http://professornilson.com/testeservico/clientes', {
-          nome: getNome,
-          email: getEmail,
-          telefone: getTelefone,
-          cpf: getCpf
+         await axios.post('http://professornilson.com/testeservico/clientes', {
+           nome: getNome,
+           telefone: getTelefone,
+           cpf: getCpf
+           
+          
           }).then(function (response) {
-            setNome('');
-            setCpf('');
-            setTelefone(''); 
-            showMessage({
-            message: "Registro Cadastrado com sucesso",
-            type: "success",
-          }); 
-            navigation.navigate("ListaContatos")
-            console.log(response);
-          }).catch(function (error) {
+               setNome('');
+               setCpf('');
+               setTelefone(''); 
                showMessage({
+                   message: "Registro Cadastrado com sucesso",
+                   type: "success",
+                  }); 
+                   navigation.navigate("ListaContatos")
+                   console.log(response);
+          }).catch(function (error) {
+                showMessage({
                    message: "Algum erro aconteceu!",
                    type: "info",
                 });
@@ -50,21 +53,14 @@ export default function CadastroContatoScreen({ route, navigation }) {
         placeholder="Digite seu nome"
       />
 
-<Text style={{marginRight: 240,fontWeight: 'bold', fontSize: 20,}}>Email</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={text => setEmail(text)}
-        placeholder="Digite seu email"
-      />
-
       <Text style={{marginRight: 258,fontWeight: 'bold', fontSize: 20,}}>CPF</Text>
       <TextInput
         style={styles.input}
         onChangeText={text => setCpf(text)}
         placeholder="Digite seu cpf"
       />
-
       <Text style={{marginRight: 213,fontWeight: 'bold', fontSize: 20,}}>Telefone</Text>
+      
       <TextInput
         style={styles.input}
         onChangeText={text => setTelefone(text)} 

@@ -5,6 +5,8 @@ import { Image, TextInput, TouchableOpacity, Touchable } from 'react-native';
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { Alert } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function CadastroScreen({ navigation }) {
 

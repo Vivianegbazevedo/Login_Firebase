@@ -1,4 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, Image, StatusBar, TextInput, TouchableOpacity, Touchable } from 'react-native';
 import { initializeApp } from "firebase/app";
